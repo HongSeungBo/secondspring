@@ -1,0 +1,27 @@
+package com.ezen.myproject.repository;
+
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
+import com.ezen.myproject.domain.BoardVO;
+import com.ezen.myproject.domain.CommentVO;
+
+import lombok.extern.slf4j.Slf4j;
+
+public interface CommentDAO {
+
+	int insert(CommentVO cvo);
+
+	List<CommentVO> getlist(int bno);
+
+	int modi(CommentVO cvo);
+
+	int remove(int cno);
+	
+	int CommentCount(CommentVO cvo);
+
+	int count(CommentVO cvo);
+
+	
+}

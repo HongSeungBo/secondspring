@@ -1,0 +1,22 @@
+package com.ezen.myproject.service;
+
+import java.util.List;
+
+import com.ezen.myproject.domain.CommentVO;
+
+public interface CommentService {
+
+	int post(CommentVO cvo);
+
+	List<CommentVO> getlist(int bno);
+
+	int modi(CommentVO cvo);
+
+	int remove(int cno);
+
+	int Count(int bno);
+
+	void updateCount(int count, int bno);
+
+
+}

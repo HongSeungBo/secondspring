@@ -1,0 +1,138 @@
+console.log(bnoVal);
+async function postCommentToServer(cmtData){
+    try{
+        const url = "/comment/post";
+        const config={
+            method:"post",
+            headers:{
+                'content-type':'application/json; charset=utf-8'
+            },
+            body:JSON.stringify(cmtData)
+        };
+
+        const resp = await fetch(url, config)
+        const result = await resp.text();
+        return result;
+    }catch(err){
+        console.log(err);
+    }
+}
+document.getElementById('cmtPostBtn').addEventListener('click',function(){
+    const cmtText = document.getElementById('cmtText').value;
+    const cmtWriter = document.getElementById('cmtWriter').innerText;
+    if(cmtText=="" || cmtText == null){
+        alert("댓글을 입력해주세요.")
+        document.getElementById('cmtText').focus();
+        return false;
+    }else{
+        let cmtData={
+            bno : bnoVal,
+            writer : cmtWriter,
+            content : cmtText
+        };
+        console.log(cmtData);
+        postCommentToServer(cmtData).then(result=>{
+            console.log(cmtData);
+            if(result==1){
+                alert("댓글등록 성공");
+            }
+        })
+    }
+})
+async function  spreadCommentListfromSever(bno){
+    try{
+        const resp = await fetch('/comment/'+bno)
+        const result = await resp.json();
+        return result;
+    }catch(err){
+        console.log(err);
+    }
+}
+
+function getCommentList(bno){
+    spreadCommentListfromSever(bno).then(result =>{
+
+        document.getElementById('cmtListArea').innerHTML=``;
+        for(let i of result){
+        document.getElementById('cmtListArea').innerHTML+=
+           `<li data-cno="${i.cno}"><div><div>작성자 : ${i.writer} <input type="text" id="cmtTextMod" value="${i.content}"></div> ${i.content}</div> <span>${i.reg_date}</span><br>`;
+            if(i.writer==sesId){
+                document.getElementById('cmtListArea').innerHTML+= `<button type="button" class="modBtn">수정</button><button type="button" class="delBtn">삭제</button><br>`;
+
+            }
+            document.getElementById('cmtListArea').innerHTML+=` </li>`;
+        }
+        console.log(result);
+    })
+}
+
+async function editCommentToSever(cmtModData){
+    try{
+        const url = '/comment/'+cmtModData.cno;
+        const config ={
+            method : 'put',
+            headers:{
+                'content-type' :'application/json; charset=utf-8'
+            },
+            body:JSON.stringify(cmtModData)
+        };
+        const resp = await fetch(url, config);
+        const result = await resp.text();
+        return result;
+    }catch(err){
+        console.log(err)
+    }
+}
+
+async function removeCommentToSever(cno){
+    try{
+        const url ='/comment/'+cno;
+        const config ={
+            method:'delete'
+        };
+        const resp =await fetch (url,config);
+        const result =await resp.text();
+        return result;
+    }catch(err){
+        console.log(err);
+    }
+}
+document.addEventListener('click',(e)=>{
+    console.log(e.target)
+    if(e.target.classList.contains('modBtn')){
+
+        let li = e.target.closest('li');
+        let cnoVal = li.dataset.cno;
+        let textContent = li.querySelector('#cmtTextMod').value;
+        console.log("cno / content => "+cnoVal+"   "+textContent);
+
+        let cmtModData ={
+            cno : cnoVal,
+            content : textContent,
+        };
+        console.log(cmtModData);
+        
+        editCommentToSever(cmtModData).then(result =>{
+            if(result == 1){
+                alert("댓글 수정 성공")
+            }else if(result==2){
+                alert("작성자가 일치하지 않습니다.")
+            }
+            getCommentList(bnoVal);
+        })
+    }
+    if(e.target.classList.contains('delBtn')){
+        let li = e.target.closest('li');
+        let cnoVal = li.dataset.cno;
+        let wirterVal = li.dataset.writer;
+        removeCommentToSever(cnoVal).then(result=>{
+            if(result ==1 ){
+                alert("댓글 삭제 성공")
+            }else if(result==2){
+                alert("작성자가 일치하지 않습니다.")
+            }
+            getCommentList(bnoVal);
+        })
+
+    }
+})

@@ -1,0 +1,7 @@
+package com.ezen.myproject;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = {MyConfig.class})
+public class BoardTest {
+
+}

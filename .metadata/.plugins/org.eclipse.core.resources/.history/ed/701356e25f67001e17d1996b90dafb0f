@@ -1,0 +1,12 @@
+package com.ezen.myproject.service;
+
+import javax.inject.Inject;
+
+import com.ezen.myproject.repository.BoardDAO;
+import com.ezen.myproject.repository.CommentDAO;
+
+public class CommentServiceImpl implements CommentService{
+
+	@Inject
+	private CommentDAO cdao;
+}

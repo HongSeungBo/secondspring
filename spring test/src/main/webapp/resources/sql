@@ -1,0 +1,65 @@
+DB설정
+-- database 설정
+create database springtest;
+
+-- user 설정
+create user springUser@localhost
+identified by 'mysql';
+
+-- 권한생성 구문
+grant all privileges on springtest.* to springUser@localhost identified by 'mysql';
+
+-- 변경내용 메모리에 반영
+flush privilege;
+
+게시판 생성
+create table board(
+bno int not null auto_increment,
+writer varchar(100),
+title varchar(200),
+content text,
+isDel varchar(10) default 'N',
+registerDate datetime default now(),
+read_count int,
+primary key(bno));
+
+=========================================================
+
+멤버 생성
+create table member(
+id varchar(100) not null,
+pw varchar(100) not null,
+name varchar(100),
+email varchar(100),
+home varchar(100),
+age int,
+reg_date datetime default now(),
+primary key(id));
+
+===================================
+
+댓글 생성
+create table comment(
+cno int auto_increment,
+bno int not null,
+writer varchar(100) not null,
+content varchar(200) not null,
+reg_date datetime default now(),
+primary key(cno));
+
+=====================================
+
+파일 생성
+create table file(
+uuid varchar(256) not null,
+save_dir varchar(256) not null,
+file_name varchar(256) not null,
+file_type tinyint(1) default 0,
+bno int,
+file_size int,
+reg_date datetime default now(),
+primary key(uuid));
+
+-- 2023-10-13--
+alter table board add commentCount int default 0;
+alter table board add fileCount int default 0;

@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  <mapper namespace="com.ezen.myproject.repository.BoardDAO">
+  	<insert id="insert" parameterType="com.ezen.myproject.domain.BoardVO">
+  		insert into board(title, writer, content) values(
+  		#{title}, #{writer}, #{content})
+  	</insert>
+  	<select id="selectBno" resultType="int">
+  		 select max(bno) from board
+  	</select>
+  	<select id="getDetail" parameterType="int" resultType="com.ezen.myproject.domain.BoardVO">
+  		select * from board where bno = #{bno}
+  	</select>
+  	<update id="readCount" parameterType="int">
+  		update board set read_count = read_count+#{cnt} where bno = #{bno}
+  	</update>
+  	<update id="update" parameterType="com.ezen.myproject.domain.BoardVO">
+  		update board set title = #{title}, content = #{content} where bno = #{bno}
+  	</update>
+  	<update id="remove" parameterType="int">
+  		update board set isDel = 'Y' where bno = #{bno}
+  	</update>
+  	<select id="totalCount" parameterType="int" resultType="int">
+  		select count(bno) from board where isDel = 'N' <include refid="search"></include>
+  	</select>
+  	<select id="getList" parameterType="com.ezen.myproject.domain.PagingVO" resultType="com.ezen.myproject.domain.BoardVO">
+  		select * from board where isDel = 'N' 
+  		<include refid="search"></include> 
+  		order by bno desc limit #{pageStart}, #{qty}
+  	</select>
+  	<select id="CommentCount" parameterType="com.ezen.myproject.domain.CommentVo" resultType="int">
+  		select count(cno) from comment where bno = #{bno};
+  	</select>
+  	<update id="updateCount" parameterType="com.ezen.myproject.domain.BoardVO">
+  		update board set commentCount = #{count} where bno = #{bno}
+  	</update>
+  	<sql id="search">
+  		<if test="type != null">
+  			<trim prefix="and ( " suffix=" ) " prefixOverrides="or">
+  				<trim prefix="OR">
+  					<choose>
+  						<when test="type == 't'.toString()">
+  					title like concat('%',#{keyword},'%')
+  				</when>
+  				<when test="type=='c'.toString()">
+  					content like concat('%',#{keyword},'%')
+  				</when>
+  				<when test="type=='w'.toString()">
+  					writer like concat('%',#{keyword},'%')
+  				</when>
+  					</choose>
+  				</trim>
+  			</trim>
+  		</if>
+  	</sql>
+  </mapper>

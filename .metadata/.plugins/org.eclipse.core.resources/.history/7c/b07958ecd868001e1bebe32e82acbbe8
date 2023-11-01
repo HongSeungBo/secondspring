@@ -1,0 +1,32 @@
+document.getElementById('trigger').addEventListener('click',function(){
+    document.getElementById('file').click();
+})
+
+//정규표현식을 사용하여 파일 형식제한 함수 만들기
+//실행파일 막기, 이미지파일만 체크, 20MB 사이즈보다 크면 막기
+const regExp = new RegExp("\.(exe|sh|bat|mis|dll|jar)$"); // 실행파일 패턴
+const regExpImg = new RegExp("\.(jpg|jpeg|png|gif|bmp)$"); // 이미자 파일 패턴
+const MaxSize = 1024*1024*20;
+
+
+//리턴 값은 0 or 1
+function fileValidation(fileName, fileSize){
+    if(regExp.test(fileNmae)){
+        return 0;
+    }else if(fileSize>MaxSize){
+        return 0;
+    }else if(regExpImg.test(fileName)){
+        return 0;
+    }else{
+        return 1;
+    }
+}
+
+//첨부 파일에 따라 파일이 등록 가능한지 체크 함수
+document.addEventListener('change', function(e){
+    console.log(e.target);
+    if(e.target.id=='file'){
+        const fileObject = document.getElementById('file').files; // 여러개의 파일이 배여롤 들어옴
+        console.log(fileobject);
+    }
+})

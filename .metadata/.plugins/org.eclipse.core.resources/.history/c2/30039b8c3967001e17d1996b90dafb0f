@@ -1,0 +1,12 @@
+package com.ezen.myproject.domain;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@ToString
+@Getter
+@Setter
+public class PagingVO {
+	private int PageNo;
+}
